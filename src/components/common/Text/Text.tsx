@@ -10,6 +10,8 @@ export interface TextProps extends RNTextProps {
   fontSize?: number;
   fontWeight?: FontWeight;
   italic?: boolean;
+  underline?: boolean;
+  align?: 'auto' | 'left' | 'right' | 'center' | undefined;
   color?: ColorValue;
 }
 
@@ -36,6 +38,8 @@ export const Text: React.FC<TextProps> = ({
   fontSize,
   fontWeight,
   italic,
+  underline,
+  align = 'auto',
   color,
   style,
   ...props
@@ -52,6 +56,8 @@ export const Text: React.FC<TextProps> = ({
       style={[
         { fontFamily },
         { color: color ?? colors.text },
+        { textAlign: align ?? align },
+        { textDecorationLine: underline ? 'underline' : 'none' },
         fontSize
           ? {
               fontSize,

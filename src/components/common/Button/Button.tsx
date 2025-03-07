@@ -190,7 +190,7 @@ const Content: React.FC<ContentProps> = ({
     }
     let paddingY = {
       default: 12 - borderWidth,
-      medium: 12 - 2 - borderWidth,
+      medium: 10 - borderWidth,
       small: 8 - borderWidth,
     }[paddingSize];
 
