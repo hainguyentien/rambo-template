@@ -63,14 +63,22 @@ const useButtonBehavior = ({
 
   // colors
   const progress = useSharedValue(disabled ? -1 : 0);
+  const variantColor =
+    variant === 'primary' ?
+      colors.primary :
+      variant === 'secondary' ?
+        colors.secondary :
+        variant === 'tertiary' ?
+          colors.tertiary :
+          colors.text;
   const [textColor, setTextColor] = useState(
-    disabled ? colors.gray : colors.text
+    disabled ? colors.gray : variantColor
   );
   useEffect(() => {
     cancelAnimation(progress);
     progress.value = withTiming(disabled ? -1 : 0, animationConfig);
-    setTextColor(disabled ? colors.gray : colors.text);
-  }, [colors.gray, colors.text, disabled, progress]);
+    setTextColor(disabled ? colors.gray : variantColor);
+  }, [colors.gray, variantColor, disabled, progress]);
 
   const latestDisabled = useLatest(disabled);
   const runDisabledAnimation = useCallback(() => {
@@ -93,7 +101,7 @@ const useButtonBehavior = ({
       elevation.value = withTiming(maxElevationLevel, animationConfig);
     }
     progress.value = withTiming(1, animationConfig);
-    setTextColor(colors.primary);
+    // setTextColor(colors.primary);
     onPressInAction?.(event);
   };
   const onPressOut = (event: GestureResponderEvent) => {
@@ -106,7 +114,7 @@ const useButtonBehavior = ({
         runOnJS(runDisabledAnimation)();
       }
     });
-    setTextColor(colors.primary);
+    // setTextColor(colors.primary);
     onPressOutAction?.(event);
   };
 
@@ -178,7 +186,7 @@ const useButtonBehavior = ({
     onPressOut,
     buttonAnimatedStyle,
     textColor,
-    loadingColor: colors.text,
+    loadingColor: variantColor,
   };
 };
 
