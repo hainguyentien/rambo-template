@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
   return (
-    <Box flex={1}>
+    <Box flex={1} gap={8}>
       <Text>
         This is a Home screen{' '}
         <Button
@@ -29,11 +29,10 @@ export default function HomeScreen() {
       <Spinner color="#000" />
       <Button
         variant="custom"
-        children={<Text>Custom Text</Text>}
         onPress={() => {
           console.log('Press Custom Button');
         }}
-      />
+      ><Text>Custom Text</Text></Button>
       <Button
         text="Icon"
         icon={<Ionicons size={20} name="home" />}
@@ -46,46 +45,46 @@ export default function HomeScreen() {
         text="Primary Default"
         subtext="Primary Default Subtext"
         onPress={() => {
-          console.log('Press Icon Button');
+          console.log('Press Primary Default Button');
         }}
         size="default"
-        style={{ backgroundColor: 'yellow' }}
+        style={{ backgroundColor: 'blue' }}
         rounded
       />
       <Button
         text="Primary Medium"
         subtext="Primary Medium Subtext"
         onPress={() => {
-          console.log('Press Icon Button');
+          console.log('Press Primary Medium Button');
         }}
         size="medium"
-        style={{ backgroundColor: 'yellow' }}
+        style={{ backgroundColor: 'blue' }}
       />
       <Button
         text="Primary"
         onPress={() => {
-          console.log('Press Icon Button');
+          console.log('Press Primary Button');
         }}
         variant={'primary'}
       />
       <Button
         text="Secondary"
         onPress={() => {
-          console.log('Press Icon Button');
+          console.log('Press Secondary Button');
         }}
         variant={'secondary'}
       />
       <Button
         text="Tertiary"
         onPress={() => {
-          console.log('Press Icon Button');
+          console.log('Press Tertiary Button');
         }}
         variant={'tertiary'}
       />
       <Button
         text="Text"
         onPress={() => {
-          console.log('Press Icon Button');
+          console.log('Press Text Button');
         }}
         variant={'text'}
       />

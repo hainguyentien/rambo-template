@@ -15,6 +15,7 @@ import type { IconProps } from './buttonRenderUtils';
 import { renderIconWithColor } from './buttonRenderUtils';
 import type { ButtonVariant } from './types';
 import { Box } from '@/components/common/Layout/Box';
+import { useTheme } from '@react-navigation/native';
 
 export interface ButtonProps {
   text?: string;
@@ -23,10 +24,6 @@ export interface ButtonProps {
   disabled?: boolean;
   loading?: boolean;
   mini?: boolean;
-  /**
-   * @deprecated use `size` prop instead, compact={true} is equal to size='small'
-   */
-  compact?: boolean;
   size?: 'small' | 'medium' | 'default';
   rounded?: boolean;
   elevated?: boolean;
@@ -37,7 +34,7 @@ export interface ButtonProps {
   onPressOut?: (event: GestureResponderEvent) => void;
   onLongPress?: (event: GestureResponderEvent) => void;
   style?: StyleProp<ViewStyle>;
-  contentStyle?: StyleProp<ViewStyle>;
+  animatedStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   subtextStyle?: StyleProp<TextStyle>;
   children?:
@@ -52,7 +49,6 @@ function Button({
   disabled,
   loading,
   mini,
-  compact,
   size = 'default',
   rounded,
   elevated,
@@ -63,7 +59,7 @@ function Button({
   onPressOut: onPressOutAction,
   onLongPress,
   style,
-  contentStyle,
+  animatedStyle,
   textStyle,
   subtextStyle,
   children,
@@ -88,6 +84,27 @@ function Button({
   const hasText = Boolean(text);
   const hasSubtext = Boolean(subtext);
 
+  const { colors } = useTheme();
+
+  const baseStyle: Record<ButtonVariant, StyleProp<ViewStyle>> = {
+    primary: {
+      backgroundColor: colors.primary,
+    },
+    secondary: {
+      backgroundColor: colors.secondary,
+    },
+    tertiary: {
+      backgroundColor: colors.tertiary,
+    },
+    outlined: {
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+    },
+    text: {},
+    'text-inline': {},
+    custom: {},
+  };
+
   if (variant === 'text-inline') {
     return (
       <Text
@@ -106,11 +123,16 @@ function Button({
   }
 
   return (
-    <Animated.View style={[{ flexDirection: mini ? 'row' : 'column' }, style]}>
+    <Animated.View
+      style={[
+        buttonAnimatedStyle,
+        animatedStyle,
+        { flexDirection: mini ? 'row' : 'column' },
+      ]}
+    >
       <Content
         variant={variant}
         disabled={disabled}
-        compact={compact}
         size={size}
         rounded={rounded}
         loading={loading}
@@ -119,7 +141,7 @@ function Button({
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         onLongPress={onLongPress}
-        style={[buttonAnimatedStyle, contentStyle]}
+        style={[baseStyle[variant], style]}
       >
         {loading && <Spinner color={loadingColor} />}
         {variant === 'custom' && !loading && (
@@ -165,15 +187,17 @@ function Button({
   );
 }
 
-type ContentProps = PressableProps &
-  Pick<ButtonProps, 'rounded' | 'disabled' | 'compact' | 'variant' | 'size'> & {
+type ContentProps = Omit<PressableProps, 'style'> &
+  Pick<ButtonProps, 'rounded' | 'disabled' | 'variant' | 'size'> & {
     loading?: boolean;
     hasSubtext?: boolean;
+    style?: StyleProp<ViewStyle>;
+    children?: React.ReactNode;
   };
+
 const Content: React.FC<ContentProps> = ({
   rounded,
   disabled,
-  compact,
   variant,
   size = 'default',
   loading,
@@ -185,9 +209,6 @@ const Content: React.FC<ContentProps> = ({
   const paddingY = React.useMemo(() => {
     const borderWidth = variant === 'primary' ? 0 : 2;
     let paddingSize = size;
-    if (compact) {
-      paddingSize = 'small';
-    }
     let paddingY = {
       default: 12 - borderWidth,
       medium: 10 - borderWidth,
@@ -198,7 +219,7 @@ const Content: React.FC<ContentProps> = ({
       paddingY -= 8 + 1;
     }
     return Math.max(paddingY, 0);
-  }, [variant, compact, size, hasSubtext, loading]);
+  }, [variant, size, hasSubtext, loading]);
 
   return (
     <Box

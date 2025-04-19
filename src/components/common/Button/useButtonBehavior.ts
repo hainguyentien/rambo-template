@@ -63,14 +63,9 @@ const useButtonBehavior = ({
 
   // colors
   const progress = useSharedValue(disabled ? -1 : 0);
-  const variantColor =
-    variant === 'primary' ?
-      colors.primary :
-      variant === 'secondary' ?
-        colors.secondary :
-        variant === 'tertiary' ?
-          colors.tertiary :
-          colors.text;
+  const variantColor = ['primary', 'secondary', 'tertiary'].includes(variant)
+    ? colors.white
+    : colors.text;
   const [textColor, setTextColor] = useState(
     disabled ? colors.gray : variantColor
   );
@@ -135,7 +130,6 @@ const useButtonBehavior = ({
           [-1, 0, 1],
           [colors.gray, colors.border, colors.gray]
         ),
-        borderWidth: variant === 'primary' ? 0 : 2,
       };
     }
     return {
@@ -169,7 +163,6 @@ const useButtonBehavior = ({
         [-1, 0, 1],
         [colors.gray, colors.border, colors.gray]
       ),
-      borderWidth: variant === 'primary' ? 0 : 2,
     };
   }, [
     colors.background,

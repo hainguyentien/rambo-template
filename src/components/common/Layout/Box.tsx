@@ -1,10 +1,10 @@
 import type { BoxProps } from './types/BoxProps';
 import React from 'react';
-import type { PressableProps } from 'react-native';
+import type { PressableProps, StyleProp, ViewStyle } from 'react-native';
 import { Pressable, View } from 'react-native';
 
 const Box: React.FC<
-  BoxProps & PressableProps & { children?: React.ReactNode }
+  BoxProps & Omit<PressableProps, 'style'> & { children?: React.ReactNode, style?: StyleProp<ViewStyle> }
 > = ({
   bgColor,
   backgroundColor,
@@ -112,6 +112,7 @@ const Box: React.FC<
   onPress,
   disabled,
   opacity,
+  style,
   ...props
 }) => {
   const Component = onPress ? Pressable : View;
@@ -119,7 +120,7 @@ const Box: React.FC<
   return (
     <Component
       // @ts-expect-error - RNW does not have these props
-      style={{
+      style={[{
         backgroundColor: bgColor ?? backgroundColor,
         borderWidth: border ?? borderWidth,
         borderStyle,
@@ -208,7 +209,7 @@ const Box: React.FC<
         rowGap,
         columnGap,
         opacity,
-      }}
+      }, style]}
       onPress={onPress}
       disabled={disabled ?? !onPress}
       {...props}
