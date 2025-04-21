@@ -22,7 +22,6 @@ export interface TextFieldProps extends Omit<TextInputProps, 'onChange'> {
   hint?: string;
   left?: React.ReactElement<unknown> | React.ComponentType<unknown>;
   right?: React.ReactElement<unknown> | React.ComponentType<unknown>;
-  inputContainerStyle?: ViewStyle;
   innerInputWrapper?: ViewStyle;
   inputStyle?: TextStyle;
   inputErrorStyle?: TextStyle;

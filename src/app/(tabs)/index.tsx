@@ -1,14 +1,16 @@
 import { Box } from '@/components/common/Layout/Box';
 import { Text } from '@/components/common/Text/Text';
-import React from 'react';
+import React, { useState } from 'react';
 import TextField from '@/components/common/TextField/TextField';
 import Button from '@/components/common/Button';
 import Spinner from '@/components/common/Button/Spinner';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
+  const [value, setValue] = useState('Value');
+
   return (
-    <Box flex={1} gap={8}>
+    <Box flex={1} gap={8} padding={8}>
       <Text>
         This is a Home screen{' '}
         <Button
@@ -23,8 +25,9 @@ export default function HomeScreen() {
         label={'Test'}
         error={'Test error'}
         hint={'Hint'}
-        left={<Ionicons size={20} name="home" />}
-        value={'Value'}
+        left={<Ionicons size={20} name="home" style={{ padding: 8 }} />}
+        value={value}
+        onChange={() => {}}
       />
       <Spinner color="#000" />
       <Button
@@ -32,7 +35,9 @@ export default function HomeScreen() {
         onPress={() => {
           console.log('Press Custom Button');
         }}
-      ><Text>Custom Text</Text></Button>
+      >
+        <Text>Custom Text</Text>
+      </Button>
       <Button
         text="Icon"
         icon={<Ionicons size={20} name="home" />}

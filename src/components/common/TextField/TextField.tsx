@@ -18,7 +18,6 @@ const TextField = forwardRef<any, TextFieldProps>(
       left,
       right,
       onChange,
-      inputContainerStyle,
       inputStyle,
       editable = true,
       disabled = false,
@@ -104,7 +103,7 @@ const TextField = forwardRef<any, TextFieldProps>(
       <Box
         mb={16}
         opacity={disabled ? 0.7 : 1}
-        style={[inputContainerStyle, containerStyle]}
+        style={[styles.inputContainerStyle, containerStyle]}
       >
         <Box flexDirection={'row'} alignItems="center">
           <Text
@@ -135,14 +134,7 @@ const TextField = forwardRef<any, TextFieldProps>(
           mb={12}
           style={[
             styles.containerInput,
-            {
-              borderBottomColor: borderBottomColor
-                ? borderBottomColor
-                : isFocused
-                  ? '#ADB1B5'
-                  : '#D6D8DA',
-            },
-            !!error && { borderBottomColor: colors.error },
+            !!error && { borderColor: colors.error },
             innerInputWrapper,
           ]}
         >
@@ -193,14 +185,15 @@ TextField.displayName = 'TextField';
 export default memo(TextField);
 
 const styles = StyleSheet.create({
+  inputContainerStyle: {},
   inputText: {
+    flex: 1,
     fontSize: 16,
     lineHeight: 24,
     fontFamily: getFontFamily(),
     paddingHorizontal: 0, // fix padding in android input
     minHeight: 36,
-    width: '85%',
-    marginVertical: 10,
+    padding: 8,
   },
   inputStyleError: {
     fontSize: 16,
@@ -208,6 +201,9 @@ const styles = StyleSheet.create({
   },
   containerInput: {
     borderBottomWidth: 1,
+    borderColor: '#000',
+    borderWidth: 1,
+    borderRadius: 6,
   },
   mgBottom: {
     marginBottom: 12,
