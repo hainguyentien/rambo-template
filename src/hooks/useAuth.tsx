@@ -17,7 +17,7 @@ export function useLogin() {
       queryClient.invalidateQueries({ queryKey: ['user'] });
     },
     onError: error => {
-      console.log('Login error:', error);
+      console.error('Login error:', error);
     },
   });
 }
@@ -29,7 +29,7 @@ export function useRegister() {
       console.log('Registration successful', data);
     },
     onError: error => {
-      console.log('Registration error:', error);
+      console.error('Registration error:', error);
     },
   });
 }
@@ -41,7 +41,7 @@ export function useForgotPassword() {
       console.log('Password reset email sent');
     },
     onError: error => {
-      console.log('Forgot password error:', error);
+      console.error('Forgot password error:', error);
     },
   });
 }

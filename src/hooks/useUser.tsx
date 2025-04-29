@@ -17,7 +17,7 @@ export function useUpdateUserProfile() {
       queryClient.invalidateQueries({ queryKey: ['getUserProfile'] });
     },
     onError: error => {
-      console.log('Update profile error:', error);
+      console.error('Update profile error:', error);
     },
   });
 }
