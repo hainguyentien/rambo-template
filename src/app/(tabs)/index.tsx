@@ -5,14 +5,16 @@ import TextField from '@/components/common/TextField/TextField';
 import Button from '@/components/common/Button';
 import Spinner from '@/components/common/Button/Spinner';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export default function HomeScreen() {
   const [value, setValue] = useState('Value');
+  const { t } = useTranslation();
 
   return (
     <Box flex={1} gap={8} padding={8}>
       <Text>
-        This is a Home screen{' '}
+        {t('home.title')}{' '}
         <Button
           text="text-inline"
           variant="text-inline"
@@ -27,7 +29,7 @@ export default function HomeScreen() {
         hint={'Hint'}
         left={<Ionicons size={20} name="home" style={{ padding: 8 }} />}
         value={value}
-        onChange={() => {}}
+        onChange={() => { }}
       />
       <Spinner color="#000" />
       <Button
