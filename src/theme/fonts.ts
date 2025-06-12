@@ -1,10 +1,12 @@
 export const fonts = {
-  NunitoSans: {
-    Regular: 'NunitoSans-Regular',
-    Italic: 'NunitoSans-Italic',
-    SemiBold: 'NunitoSans-SemiBold',
-    SemiBoldItalic: 'NunitoSans-SemiBoldItalic',
-    Bold: 'NunitoSans-Bold',
-    BoldItalic: 'NunitoSans-BoldItalic',
+  Lalezar: {
+    Regular: 'Lalezar-Regular',
+  },
+  Manrope: {
+    Light: 'Manrope-Light',
+    Regular: 'Manrope-Regular',
+    Medium: 'Manrope-Medium',
+    SemiBold: 'Manrope-SemiBold',
+    Bold: 'Manrope-Bold',
   },
 } as const;

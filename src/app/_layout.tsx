@@ -20,12 +20,12 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    'NunitoSans-Regular': require('../assets/fonts/NunitoSans-Regular.ttf'),
-    'NunitoSans-Bold': require('../assets/fonts/NunitoSans-Bold.ttf'),
-    'NunitoSans-SemiBold': require('../assets/fonts/NunitoSans-SemiBold.ttf'),
-    'NunitoSans-Italic': require('../assets/fonts/NunitoSans-Italic.ttf'),
-    'NunitoSans-BoldItalic': require('../assets/fonts/NunitoSans-BoldItalic.ttf'),
-    'NunitoSans-SemiBoldItalic': require('../assets/fonts/NunitoSans-SemiBoldItalic.ttf'),
+    'Manrope-Light': require('../assets/fonts/Manrope-Light.ttf'),
+    'Manrope-Regular': require('../assets/fonts/Manrope-Regular.ttf'),
+    'Manrope-Medium': require('../assets/fonts/Manrope-Medium.ttf'),
+    'Manrope-SemiBold': require('../assets/fonts/Manrope-SemiBold.ttf'),
+    'Manrope-Bold': require('../assets/fonts/Manrope-Bold.ttf'),
+    'Lalezar': require('../assets/fonts/Lalezar-Regular.ttf'),
   });
 
   useEffect(() => {

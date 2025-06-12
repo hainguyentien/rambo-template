@@ -8,28 +8,41 @@ export type FontWeight = 'normal' | 'semibold' | 'bold';
 
 export interface TextProps extends RNTextProps {
   fontSize?: number;
-  fontWeight?: FontWeight;
+  fontWeight?: FontWeight | 'light' | 'medium';
   italic?: boolean;
   underline?: boolean;
   align?: 'auto' | 'left' | 'right' | 'center' | undefined;
   color?: ColorValue;
+  fontFamily?: 'lalezar' | 'manrope';
+  flex?: number;
 }
 
 export const getFontFamily = (
-  fontWeight: FontWeight = 'normal',
-  italic = false
+  fontFamily: 'lalezar' | 'manrope',
+  fontWeight: FontWeight | 'light' | 'medium' = 'normal'
 ): string => {
-  switch (fontWeight) {
-    case 'normal':
-      return italic ? fonts.NunitoSans.Italic : fonts.NunitoSans.Regular;
-    case 'semibold':
-      return italic
-        ? fonts.NunitoSans.SemiBoldItalic
-        : fonts.NunitoSans.SemiBold;
-    case 'bold':
-      return italic ? fonts.NunitoSans.BoldItalic : fonts.NunitoSans.Bold;
-    default:
-      return italic ? fonts.NunitoSans.Italic : fonts.NunitoSans.Regular;
+  if (fontFamily === 'manrope') {
+    switch (fontWeight) {
+      case 'light':
+        return fonts.Manrope.Light;
+      case 'normal':
+        return fonts.Manrope.Regular;
+      case 'medium':
+        return fonts.Manrope.Medium;
+      case 'semibold':
+        return fonts.Manrope.SemiBold;
+      case 'bold':
+        return fonts.Manrope.Bold;
+      default:
+        return fonts.Manrope.Regular;
+    }
+  } else {
+    switch (fontFamily) {
+      case 'lalezar':
+        return fonts.Lalezar.Regular;
+      default:
+        return fonts.Manrope.Regular;
+    }
   }
 };
 
@@ -42,19 +55,20 @@ export const Text: React.FC<TextProps> = ({
   align = 'auto',
   color,
   style,
+  fontFamily = 'manrope',
   ...props
 }) => {
   const { colors } = useTheme();
 
-  const fontFamily = useMemo(
-    () => getFontFamily(fontWeight, italic),
+  const textFontFamily = useMemo(
+    () => getFontFamily(fontFamily, fontWeight),
     [fontWeight, italic]
   );
 
   return (
     <RNText
       style={[
-        { fontFamily },
+        { fontFamily: textFontFamily },
         { color: color ?? colors.text },
         { textAlign: align ?? align },
         { textDecorationLine: underline ? 'underline' : 'none' },
