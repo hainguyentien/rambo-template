@@ -9,7 +9,11 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:studio": "npx prisma studio",
+    "prisma:seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "jest": {
     "preset": "jest-expo"
@@ -18,8 +22,10 @@
     "@expo/vector-icons": "^14.0.2",
     "@gorhom/bottom-sheet": "^5.0.6",
     "@gorhom/portal": "^1.0.14",
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
+    "@supabase/supabase-js": "^2.50.0",
     "@tanstack/react-query": "^5.61.3",
     "axios": "^1.7.7",
     "dayjs": "^1.11.13",
@@ -37,6 +43,7 @@
     "expo-web-browser": "~14.0.2",
     "i18next": "^25.0.2",
     "lodash": "^4.17.21",
+    "prisma": "^6.9.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.54.2",
@@ -51,7 +58,8 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "zod": "^3.23.8",
-    "zustand": "^5.0.1"
+    "zustand": "^5.0.1",
+    "@prisma/client": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
