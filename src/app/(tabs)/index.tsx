@@ -30,6 +30,7 @@ export default function HomeScreen() {
       />
       <Spinner color="#000" />
       <Button
+        text={'Custom'}
         variant="custom"
         onPress={() => {
           console.log('Press Custom Button');

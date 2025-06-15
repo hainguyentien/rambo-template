@@ -1,52 +1,68 @@
-import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import 'react-native-reanimated';
 import { QueryClientProvider } from '@tanstack/react-query';
 import initI18n from '@/i18n/config';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { darkTheme, lightTheme } from '@/theme';
-import { ThemeProvider } from '@react-navigation/core';
+import { lightTheme } from '@/theme';
+import { ThemeProvider } from '@react-navigation/native';
 import { queryClient } from '@/lib/react-query';
+import { useColorScheme } from 'react-native';
+import { AsyncFont } from '@/components/common/AsyncFont/AsyncFont';
 
 initI18n();
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+function SplashFallback() {
+  useEffect(
+    () => () => {
+      SplashScreen.hideAsync();
+    },
+    []
+  );
+  return null;
+}
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    'NunitoSans-Regular': require('../assets/fonts/NunitoSans-Regular.ttf'),
-    'NunitoSans-Bold': require('../assets/fonts/NunitoSans-Bold.ttf'),
-    'NunitoSans-SemiBold': require('../assets/fonts/NunitoSans-SemiBold.ttf'),
-    'NunitoSans-Italic': require('../assets/fonts/NunitoSans-Italic.ttf'),
-    'NunitoSans-BoldItalic': require('../assets/fonts/NunitoSans-BoldItalic.ttf'),
-    'NunitoSans-SemiBoldItalic': require('../assets/fonts/NunitoSans-SemiBoldItalic.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <Suspense fallback={<SplashFallback />}>
+      {/* Load fonts in suspense */}
+      <AsyncFont
+        src={require('../assets/fonts/NunitoSans-Regular.ttf')}
+        fontFamily="NunitoSans-Regular"
+      />
+      <AsyncFont
+        src={require('../assets/fonts/NunitoSans-Bold.ttf')}
+        fontFamily="NunitoSans-Bold"
+      />
+      <AsyncFont
+        src={require('../assets/fonts/NunitoSans-SemiBold.ttf')}
+        fontFamily="NunitoSans-SemiBold"
+      />
+      <AsyncFont
+        src={require('../assets/fonts/NunitoSans-Italic.ttf')}
+        fontFamily="NunitoSans-Italic"
+      />
+      <AsyncFont
+        src={require('../assets/fonts/NunitoSans-BoldItalic.ttf')}
+        fontFamily="NunitoSans-BoldItalic"
+      />
+      <AsyncFont
+        src={require('../assets/fonts/NunitoSans-SemiBoldItalic.ttf')}
+        fontFamily="NunitoSans-SemiBoldItalic"
+      />
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={lightTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </Suspense>
   );
 }

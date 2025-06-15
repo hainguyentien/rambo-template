@@ -47,7 +47,7 @@ export const darkColors: ColorType = {
   secondaryVariant: colors.darkGreen[50],
 
   // background
-  background: colors.white,
+  background: colors.black,
   surface: colors.grey[50],
   error: colors.red,
 
@@ -55,7 +55,7 @@ export const darkColors: ColorType = {
   onPrimary: colors.white,
   onSecondary: colors.white,
   onSurface: colors.darkGreen[100],
-  onBackground: colors.darkGreen[100],
+  onBackground: colors.white,
   onError: colors.white,
   placeholder: colors.greyDarker,
 
