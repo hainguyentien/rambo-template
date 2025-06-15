@@ -13,23 +13,20 @@ export default function HomeScreen() {
 
   return (
     <Box flex={1} gap={8} padding={8}>
-      <Text>
-        {t('home.title')}{' '}
-        <Button
-          text="text-inline"
-          variant="text-inline"
-          onPress={() => {
-            console.log('Press Text Inline Button');
-          }}
-        />
-      </Text>
+      <Button
+        text="text-inline"
+        variant="text-inline"
+        onPress={() => {
+          console.log('Press Text Inline Button');
+        }}
+      />
       <TextField
         label={'Test'}
         error={'Test error'}
         hint={'Hint'}
         left={<Ionicons size={20} name="home" style={{ padding: 8 }} />}
         value={value}
-        onChange={() => { }}
+        onChange={() => {}}
       />
       <Spinner color="#000" />
       <Button
@@ -55,8 +52,8 @@ export default function HomeScreen() {
           console.log('Press Primary Default Button');
         }}
         size="default"
-        style={{ backgroundColor: 'blue' }}
         rounded
+        contentStyle={{ backgroundColor: 'red' }}
       />
       <Button
         text="Primary Medium"
@@ -65,7 +62,6 @@ export default function HomeScreen() {
           console.log('Press Primary Medium Button');
         }}
         size="medium"
-        style={{ backgroundColor: 'blue' }}
       />
       <Button
         text="Primary"

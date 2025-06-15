@@ -17,16 +17,13 @@ function Spinner({ color }: SpinnerProps): JSX.Element {
   const spinnerSize = 20;
 
   const rotation = useSharedValue(0);
-  const animatedStyles = useAnimatedStyle(
-    () => ({
-      transform: [
-        {
-          rotateZ: `${rotation.value}deg`,
-        },
-      ],
-    }),
-    [rotation.value]
-  );
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: [
+      {
+        rotateZ: `${rotation.value}deg`,
+      },
+    ],
+  }));
 
   useEffect(() => {
     rotation.value = withRepeat(

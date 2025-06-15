@@ -41,12 +41,10 @@ const useButtonBehavior = ({
   onPressInAction?: (event: GestureResponderEvent) => void;
   onPressOutAction?: (event: GestureResponderEvent) => void;
 }) => {
-  const { colors } = useTheme();
-  const maxElevationLevel = 4;
-  const minElevationLevel = 0;
-  const animationConfig = {
-    duration: 200,
-  };
+  const theme = useTheme();
+  const { maxElevationLevel, minElevationLevel, animationConfig } =
+    theme.components.button;
+  const colors = theme.components.button.colors[variant];
 
   const flat = variant === 'text' || variant === 'text-inline';
   // elevation
@@ -63,25 +61,22 @@ const useButtonBehavior = ({
 
   // colors
   const progress = useSharedValue(disabled ? -1 : 0);
-  const variantColor = ['primary', 'secondary', 'tertiary'].includes(variant)
-    ? colors.white
-    : colors.text;
   const [textColor, setTextColor] = useState(
-    disabled ? colors.gray : variantColor
+    disabled ? colors.labelDisabled : colors.label
   );
   useEffect(() => {
     cancelAnimation(progress);
     progress.value = withTiming(disabled ? -1 : 0, animationConfig);
-    setTextColor(disabled ? colors.gray : variantColor);
-  }, [colors.gray, variantColor, disabled, progress]);
+    setTextColor(disabled ? colors.labelDisabled : colors.label);
+  }, [colors.label, colors.labelDisabled, disabled, progress]);
 
   const latestDisabled = useLatest(disabled);
   const runDisabledAnimation = useCallback(() => {
     if (latestDisabled.current) {
       progress.value = withTiming(-1, animationConfig);
-      setTextColor(colors.gray);
+      setTextColor(colors.labelDisabled);
     }
-  }, [animationConfig, colors.gray]);
+  }, [animationConfig, colors.labelDisabled]);
 
   // actions
   const onPress = (event: GestureResponderEvent) => {
@@ -96,9 +91,10 @@ const useButtonBehavior = ({
       elevation.value = withTiming(maxElevationLevel, animationConfig);
     }
     progress.value = withTiming(1, animationConfig);
-    // setTextColor(colors.primary);
+    setTextColor(colors.labelHighlight);
     onPressInAction?.(event);
   };
+
   const onPressOut = (event: GestureResponderEvent) => {
     if (disabled || loading) return;
     if (!elevated && !flat) {
@@ -109,7 +105,7 @@ const useButtonBehavior = ({
         runOnJS(runDisabledAnimation)();
       }
     });
-    // setTextColor(colors.primary);
+    setTextColor(colors.label);
     onPressOutAction?.(event);
   };
 
@@ -123,13 +119,18 @@ const useButtonBehavior = ({
         backgroundColor: interpolateColor(
           progress.value,
           [-1, 0, 1],
-          [colors.gray, colors.background, colors.white]
+          [
+            colors.backgroundDisabled,
+            colors.background,
+            colors.backgroundHighlight,
+          ]
         ),
         borderColor: interpolateColor(
           progress.value,
           [-1, 0, 1],
-          [colors.gray, colors.border, colors.gray]
+          [colors.borderDisabled, colors.border, colors.borderHighlight]
         ),
+        borderWidth: variant === 'primary' ? 0 : 2,
       };
     }
     return {
@@ -156,22 +157,20 @@ const useButtonBehavior = ({
       backgroundColor: interpolateColor(
         progress.value,
         [-1, 0, 1],
-        [colors.gray, colors.background, colors.gray]
+        [
+          colors.backgroundDisabled,
+          colors.background,
+          colors.backgroundHighlight,
+        ]
       ),
       borderColor: interpolateColor(
         progress.value,
         [-1, 0, 1],
-        [colors.gray, colors.border, colors.gray]
+        [colors.borderDisabled, colors.border, colors.borderHighlight]
       ),
+      borderWidth: variant === 'primary' ? 0 : 2,
     };
-  }, [
-    colors.background,
-    colors.gray,
-    colors.white,
-    colors.border,
-    elevation.value,
-    progress.value,
-  ]);
+  });
 
   return {
     onPress,
@@ -179,7 +178,7 @@ const useButtonBehavior = ({
     onPressOut,
     buttonAnimatedStyle,
     textColor,
-    loadingColor: variantColor,
+    loadingColor: colors.label,
   };
 };
 

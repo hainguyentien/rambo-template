@@ -1,47 +1,54 @@
-import { DarkTheme, DefaultTheme } from '@react-navigation/native';
-
-export const lightColors = {
-  background: '#FFFFFF',
-  primary: '#D72638',
-  primaryLight: '#FEE3D0',
-  secondary: '#2C2C54',
-  tertiary: '#A8C686',
-  border: '#9C9C9C',
-  border2: '#E3E3E3',
-  white: '#FFFFFF',
-  gray: '#363636',
-  green: '#07CA4A',
-  error: '#D70015',
-};
-
-export type ColorType = typeof lightColors;
-
-export const lightTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    ...lightColors,
+export const colors = {
+  orange: {
+    100: '#E87722',
+    50: '#F3BB90',
+    20: '#FAE4D3',
+    5: '#FEF9F4',
   },
-};
-
-export const darkColors: ColorType = {
-  background: '#1F1F1F',
-  primary: '#D72638',
-  primaryLight: '#332C24',
-  secondary: '#2C2C54',
-  tertiary: '#A8C686',
-  border: '#9C9C9C',
-  border2: '#383838',
+  orangeTransparent: {
+    85: 'rgba(232, 119, 34, 0.85)',
+    50: 'rgba(232, 119, 34, 0.5)',
+  },
+  darkGreen: {
+    100: '#183028',
+    50: '#859D99',
+    20: '#CED8D6',
+  },
+  darkGreenTransparent: {
+    85: 'rgba(24, 48, 40, 0.85)',
+    50: 'rgba(24, 48, 40, 0.5)',
+  },
+  black: '#000000',
+  greyDarkest: '#636566',
+  greyDarker: '#8B8E8F',
+  greyDark: '#B3B6B8',
+  grey: {
+    100: '#DBDFE1',
+    50: '#EDEFF0',
+    20: '#F8F9F9',
+  },
   white: '#FFFFFF',
-  gray: '#363636',
-  green: '#07CA4A',
-  error: '#FF6961',
-};
-
-export const darkTheme = {
-  ...DarkTheme,
-  colors: {
-    ...DarkTheme.colors,
-    ...darkColors,
+  whiteTransparent: 'rgba(255, 255, 255, 0)',
+  yellow: {
+    100: '#FED141',
+    50: '#FEE8A0',
+    20: '#FFF6D9',
+  },
+  lightGreen: {
+    100: '#6ECEB2',
+    50: '#B6E6D8',
+    20: '#E2F5F0',
+  },
+  blue: {
+    100: '#0097A9',
+    50: '#7FCBD4',
+    20: '#CCEAEE',
+  },
+  red: '#B30909',
+  redLight: '#FEF3F3',
+  green: '#03824F',
+  greenLight: '#F2F9F6',
+  brown: {
+    100: '#391900',
   },
 };

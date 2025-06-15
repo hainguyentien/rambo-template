@@ -1,8 +1,7 @@
 export type ButtonVariant =
-	| 'primary'
-	| 'secondary'
-	| 'tertiary'
-	| 'outlined'
-	| 'text'
-	| 'text-inline'
-	| 'custom';
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'text'
+  | 'text-inline'
+  | 'custom';

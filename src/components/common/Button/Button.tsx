@@ -6,6 +6,7 @@ import type {
   TextStyle,
   ViewStyle,
 } from 'react-native';
+import { Pressable } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { Text } from '../Text/Text';
@@ -34,13 +35,15 @@ export interface ButtonProps {
   onPressOut?: (event: GestureResponderEvent) => void;
   onLongPress?: (event: GestureResponderEvent) => void;
   style?: StyleProp<ViewStyle>;
-  animatedStyle?: StyleProp<ViewStyle>;
+  contentStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   subtextStyle?: StyleProp<TextStyle>;
   children?:
     | React.ReactElement<unknown>
     | ((color: string) => React.ReactElement<unknown>);
 }
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 function Button({
   text,
@@ -59,7 +62,7 @@ function Button({
   onPressOut: onPressOutAction,
   onLongPress,
   style,
-  animatedStyle,
+  contentStyle,
   textStyle,
   subtextStyle,
   children,
@@ -84,27 +87,6 @@ function Button({
   const hasText = Boolean(text);
   const hasSubtext = Boolean(subtext);
 
-  const { colors } = useTheme();
-
-  const baseStyle: Record<ButtonVariant, StyleProp<ViewStyle>> = {
-    primary: {
-      backgroundColor: colors.primary,
-    },
-    secondary: {
-      backgroundColor: colors.secondary,
-    },
-    tertiary: {
-      backgroundColor: colors.tertiary,
-    },
-    outlined: {
-      backgroundColor: 'transparent',
-      borderWidth: 2,
-    },
-    text: {},
-    'text-inline': {},
-    custom: {},
-  };
-
   if (variant === 'text-inline') {
     return (
       <Text
@@ -123,13 +105,7 @@ function Button({
   }
 
   return (
-    <Animated.View
-      style={[
-        buttonAnimatedStyle,
-        animatedStyle,
-        { flexDirection: mini ? 'row' : 'column' },
-      ]}
-    >
+    <Animated.View style={[style, { flexDirection: mini ? 'row' : 'column' }]}>
       <Content
         variant={variant}
         disabled={disabled}
@@ -141,7 +117,7 @@ function Button({
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         onLongPress={onLongPress}
-        style={[baseStyle[variant], style]}
+        style={[buttonAnimatedStyle, contentStyle]}
       >
         {loading && <Spinner color={loadingColor} />}
         {variant === 'custom' && !loading && (
@@ -206,9 +182,10 @@ const Content: React.FC<ContentProps> = ({
   children,
   ...props
 }) => {
+  const { components } = useTheme();
   const paddingY = React.useMemo(() => {
     const borderWidth = variant === 'primary' ? 0 : 2;
-    let paddingSize = size;
+    const paddingSize = size;
     let paddingY = {
       default: 12 - borderWidth,
       medium: 10 - borderWidth,
@@ -222,23 +199,28 @@ const Content: React.FC<ContentProps> = ({
   }, [variant, size, hasSubtext, loading]);
 
   return (
-    <Box
-      flexDirection="row"
-      py={paddingY}
-      px={12}
-      borderRadius={rounded ? 99 : 12}
-      justifyContent="center"
-      alignItems="center"
-      opacity={
-        disabled && variant && ['tertiary', 'custom'].includes(variant)
-          ? 0.5
-          : 1
-      }
-      style={style}
+    <AnimatedPressable
+      style={[
+        {
+          flexDirection: 'row',
+          paddingHorizontal: 12,
+          paddingVertical: paddingY,
+          borderRadius: rounded
+            ? components.button.roundness.rounded
+            : components.button.roundness.default,
+          justifyContent: 'center',
+          alignItems: 'center',
+          opacity:
+            disabled && variant && ['tertiary', 'custom'].includes(variant)
+              ? 0.5
+              : 1,
+        },
+        style,
+      ]}
       {...props}
     >
       {children}
-    </Box>
+    </AnimatedPressable>
   );
 };
 

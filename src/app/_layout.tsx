@@ -8,7 +8,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import initI18n from '@/i18n/config';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { darkTheme, lightTheme } from '@/theme/colors';
+import { darkTheme, lightTheme } from '@/theme';
 import { ThemeProvider } from '@react-navigation/core';
 import { queryClient } from '@/lib/react-query';
 

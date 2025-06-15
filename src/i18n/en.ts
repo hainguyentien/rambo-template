@@ -1,4 +1,4 @@
-export const EN = {
+const en = {
   common: {
     appName: '',
     ok: 'OK',
@@ -14,10 +14,6 @@ export const EN = {
     next: 'Next',
     submit: 'Submit',
   },
-  home: {
-    title: 'Home',
-  },
-  explore: {
-    title: 'Explore',
-  },
 };
+
+export default en;
