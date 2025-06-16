@@ -6,7 +6,7 @@ import 'react-native-reanimated';
 import { QueryClientProvider } from '@tanstack/react-query';
 import initI18n from '@/i18n/config';
 
-import { lightTheme } from '@/theme';
+import { darkTheme, lightTheme } from '@/theme';
 import { ThemeProvider } from '@react-navigation/native';
 import { queryClient } from '@/lib/react-query';
 import { useColorScheme } from 'react-native';
@@ -55,7 +55,7 @@ export default function RootLayout() {
         fontFamily="NunitoSans-SemiBoldItalic"
       />
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={lightTheme}>
+        <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
