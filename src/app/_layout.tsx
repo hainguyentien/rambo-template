@@ -5,12 +5,14 @@ import React, { Suspense, useEffect } from 'react';
 import 'react-native-reanimated';
 import { QueryClientProvider } from '@tanstack/react-query';
 import initI18n from '@/i18n/config';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { darkTheme, lightTheme } from '@/theme';
 import { ThemeProvider } from '@react-navigation/native';
 import { queryClient } from '@/lib/react-query';
 import { useColorScheme } from 'react-native';
 import { AsyncFont } from '@/components/common/AsyncFont/AsyncFont';
+import { NotificationProvider } from '@/contexts/NotificationContext';
 
 initI18n();
 SplashScreen.preventAutoHideAsync();
@@ -55,13 +57,19 @@ export default function RootLayout() {
         fontFamily="NunitoSans-SemiBoldItalic"
       />
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
-        </ThemeProvider>
+        <NotificationProvider>
+          <KeyboardProvider>
+            <ThemeProvider
+              value={colorScheme === 'dark' ? darkTheme : lightTheme}
+            >
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <StatusBar style="auto" />
+            </ThemeProvider>
+          </KeyboardProvider>
+        </NotificationProvider>
       </QueryClientProvider>
     </Suspense>
   );
