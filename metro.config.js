@@ -1,4 +1,14 @@
 const { getDefaultConfig } = require('expo/metro-config');
-const { withLingui } = require('@lingui/metro-transformer');
+const config = getDefaultConfig(__dirname);
 
-module.exports = withLingui(getDefaultConfig(__dirname));
+config.transformer = {
+  ...config.transformer,
+  babelTransformerPath: require.resolve('@lingui/metro-transformer/expo'),
+};
+
+config.resolver = {
+  ...config.resolver,
+  sourceExts: [...config.resolver.sourceExts, 'po'],
+};
+
+module.exports = config;
