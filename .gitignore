@@ -41,3 +41,6 @@ app-example
 /ios
 
 src/locales/**/*.js
+!/CLAUDE.md
+
+CLAUDE.md

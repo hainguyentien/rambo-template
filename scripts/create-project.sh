@@ -1,119 +1,191 @@
 #!/bin/bash
 
-# Function to validate input
-validate_input() {
-    local input=$1
-    if [[ -z "$input" ]]; then
-        echo "Error: Input cannot be empty."
-        return 1
-    fi
-    # Check if input contains only alphanumeric characters and underscores
-    if [[ ! "$input" =~ ^[a-zA-Z0-9_-]+$ ]]; then
-        echo "Error: Invalid input. Use only alphanumeric characters, underscores, and hyphens."
-        return 1
-    fi
-    return 0
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATE_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+PARENT_DIR="$(dirname "$TEMPLATE_DIR")"
+TEMPLATE_NAME="$(basename "$TEMPLATE_DIR")"
+
+require_non_empty() {
+  local value="$1"
+  local field="$2"
+
+  if [[ -z "${value// }" ]]; then
+    echo "Error: ${field} cannot be empty."
+    return 1
+  fi
 }
 
-# Function to replace text in files
-replace_in_file() {
-    local file=$1
-    local old_project_name=$2
-    local new_project_name=$3
-    local old_scheme=$4
-    local new_scheme=$5
+to_slug() {
+  local value
+  value="$(echo "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//; s/-{2,}/-/g')"
 
-    # Use sed to perform replacements
-    sed -i "" \
-        -e "s/$old_project_name/$new_project_name/g" \
-        -e "s/$old_scheme/$new_scheme/g" \
-        "$file"
+  if [[ -z "$value" ]]; then
+    value="app"
+  fi
+
+  printf '%s' "$value"
 }
 
-# Main script
-clear
-echo "React Native Expo Project Cloner"
-echo "--------------------------------"
+to_bundle_segment() {
+  local value
+  value="$(echo "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/_/g; s/^_+//; s/_+$//; s/_{2,}/_/g')"
 
-# Get source project directory with fallback
-while true; do
-    read -p "Enter the full path to the source project directory (press Enter to use parent directory): " source_dir
+  if [[ -z "$value" ]]; then
+    value="app"
+  fi
 
-    # If no input, use parent directory
-    if [[ -z "$source_dir" ]]; then
-        source_dir=$(dirname "$(pwd)")
-    fi
+  printf '%s' "$value"
+}
 
-    # Validate directory exists and contains an Expo project
-    if [[ -d "$source_dir" ]] && [[ -f "$source_dir/app.json" ]]; then
-        break
-    else
-        echo "Error: Invalid directory. Please ensure it's a valid Expo project directory."
-    fi
-done
+is_valid_bundle_id() {
+  local value="$1"
+  [[ "$value" =~ ^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$ ]]
+}
 
-# Get project name
-while true; do
-    read -p "Enter new project name: " new_project_name
-    if validate_input "$new_project_name"; then
-        break
-    fi
-done
+escape_sed() {
+  printf '%s' "$1" | sed -e 's/[\/&]/\\&/g'
+}
 
-# Get scheme
-while true; do
-    read -p "Enter new project scheme (e.g., com.example.projectname): " new_scheme
-    if validate_input "$(echo "$new_scheme" | tr '.' '_')"; then
-        break
-    fi
-done
+copy_non_ignored_files() {
+  local source_dir="$1"
+  local destination_dir="$2"
 
-# Determine parent directory
-parent_dir=$(dirname "$source_dir")
-destination_dir="$parent_dir/$new_project_name"
-
-# Check if destination directory already exists
-if [[ -d "$destination_dir" ]]; then
-    echo "Error: Destination directory $destination_dir already exists."
+  if ! command -v git >/dev/null 2>&1; then
+    echo "Error: git is required to copy only non-ignored files."
     exit 1
+  fi
+
+  if ! command -v rsync >/dev/null 2>&1; then
+    echo "Error: rsync is required to copy project files."
+    exit 1
+  fi
+
+  if ! git -C "$source_dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "Error: Template directory must be inside a git repository."
+    exit 1
+  fi
+
+  (
+    cd "$source_dir"
+    git ls-files -z --cached --others --exclude-standard \
+      | rsync -a --from0 --files-from=- ./ "$destination_dir/"
+  )
+}
+
+update_app_config() {
+  local file="$1"
+  local app_name="$2"
+  local slug="$3"
+  local scheme="$4"
+  local ios_bundle_id="$5"
+  local android_package="$6"
+
+  local app_name_esc slug_esc scheme_esc ios_bundle_esc android_package_esc
+  app_name_esc="$(escape_sed "$app_name")"
+  slug_esc="$(escape_sed "$slug")"
+  scheme_esc="$(escape_sed "$scheme")"
+  ios_bundle_esc="$(escape_sed "$ios_bundle_id")"
+  android_package_esc="$(escape_sed "$android_package")"
+
+  sed -i "" -E \
+    -e "s/(name:[[:space:]]*)'[^']*'/\1'${app_name_esc}'/" \
+    -e "s/(slug:[[:space:]]*)'[^']*'/\1'${slug_esc}'/" \
+    -e "s/(scheme:[[:space:]]*)'[^']*'/\1'${scheme_esc}'/" \
+    -e "s/(bundleIdentifier:[[:space:]]*)'[^']*'/\1'${ios_bundle_esc}'/" \
+    -e "s/(package:[[:space:]]*)'[^']*'/\1'${android_package_esc}'/" \
+    "$file"
+}
+
+update_package_name() {
+  local file="$1"
+  local package_name="$2"
+  local package_name_esc
+
+  package_name_esc="$(escape_sed "$package_name")"
+  sed -i "" -E "s/(\"name\"[[:space:]]*:[[:space:]]*\")([^\"]+)(\")/\1${package_name_esc}\3/" "$file"
+}
+
+if [[ -t 1 ]] && command -v clear >/dev/null 2>&1; then
+  clear
+fi
+echo "Create Project from Template"
+echo "----------------------------"
+echo "Template folder : ${TEMPLATE_DIR}"
+echo "Destination root: ${PARENT_DIR}"
+echo
+
+while true; do
+  read -r -p "Project folder name: " PROJECT_NAME
+  require_non_empty "$PROJECT_NAME" "Project folder name" && break
+done
+
+while true; do
+  read -r -p "App name (display name): " APP_NAME
+  require_non_empty "$APP_NAME" "App name" && break
+done
+
+APP_SLUG="$(to_slug "$PROJECT_NAME")"
+APP_SCHEME="$(to_slug "$APP_NAME")"
+DEFAULT_BUNDLE_ID="com.teaser.$(to_bundle_segment "$APP_NAME")"
+
+while true; do
+  read -r -p "Bundle identifier [${DEFAULT_BUNDLE_ID}]: " BUNDLE_ID_INPUT
+  BUNDLE_ID="${BUNDLE_ID_INPUT:-$DEFAULT_BUNDLE_ID}"
+  if is_valid_bundle_id "$BUNDLE_ID"; then
+    break
+  fi
+  echo "Error: Invalid bundle identifier. Example: com.teaser.my_app"
+done
+
+DEST_DIR="${PARENT_DIR}/${PROJECT_NAME}"
+APP_CONFIG_FILE="${DEST_DIR}/app.config.ts"
+PACKAGE_JSON_FILE="${DEST_DIR}/package.json"
+ANDROID_PACKAGE="$(echo "$BUNDLE_ID" | tr '[:upper:]' '[:lower:]' | sed -E 's/-+/_/g; s/[^a-z0-9._]/_/g')"
+
+if [[ "$DEST_DIR" == "$TEMPLATE_DIR" ]]; then
+  echo "Error: Destination cannot be the current template directory (${TEMPLATE_NAME})."
+  exit 1
 fi
 
-# Create destination directory
-mkdir -p "$destination_dir"
+if [[ -e "$DEST_DIR" ]]; then
+  echo "Error: Destination already exists: $DEST_DIR"
+  exit 1
+fi
 
-# Copy files and folders, excluding node_modules and .idea
-echo "Copying project files..."
-rsync -av \
-    --exclude "node_modules/" \
-    --exclude ".idea/" \
-    --exclude ".git/" \
-    "$source_dir/" "$destination_dir/"
+echo
+echo "Configuration summary"
+echo "- Project folder : ${PROJECT_NAME}"
+echo "- App name       : ${APP_NAME}"
+echo "- Slug           : ${APP_SLUG}"
+echo "- Scheme         : ${APP_SCHEME}"
+echo "- iOS bundle ID  : ${BUNDLE_ID}"
+echo "- Android package: ${ANDROID_PACKAGE}"
+echo "- Destination    : ${DEST_DIR}"
+echo
 
-# Files to modify (add more as needed)
-config_files=(
-    "$destination_dir/app.json"
-    "$destination_dir/package.json"
-    "$destination_dir/app.config.js"
-    "$destination_dir/babel.config.js"
-)
+read -r -p "Continue? [y/N]: " CONFIRM
+if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
+  echo "Cancelled."
+  exit 0
+fi
 
-# Get original project name and scheme from source project
-original_project_name=$(basename "$source_dir")
-original_scheme=$(grep -o "com\.[^\"']*" "$source_dir/app.json" | head -1)
+mkdir -p "$DEST_DIR"
+copy_non_ignored_files "$TEMPLATE_DIR" "$DEST_DIR"
 
-# Replace project name and scheme in config files
-for file in "${config_files[@]}"; do
-    if [[ -f "$file" ]]; then
-        replace_in_file "$file" "$original_project_name" "$new_project_name" "$original_scheme" "$new_scheme"
-    fi
-done
+if [[ ! -f "$APP_CONFIG_FILE" ]]; then
+  echo "Error: app.config.ts not found in destination: $APP_CONFIG_FILE"
+  exit 1
+fi
 
-# Reinitialize git
-cd "$destination_dir"
-rm -rf .git
-git init
-git add .
-git commit -m "Initial commit of $new_project_name"
+update_app_config "$APP_CONFIG_FILE" "$APP_NAME" "$APP_SLUG" "$APP_SCHEME" "$BUNDLE_ID" "$ANDROID_PACKAGE"
 
-echo "Project cloned successfully!"
-echo "New project created at: $destination_dir"
+if [[ -f "$PACKAGE_JSON_FILE" ]]; then
+  update_package_name "$PACKAGE_JSON_FILE" "$APP_SLUG"
+fi
+
+echo
+echo "Project created successfully."
+echo "Location: $DEST_DIR"
+echo "Template remains unchanged at: $TEMPLATE_DIR"
