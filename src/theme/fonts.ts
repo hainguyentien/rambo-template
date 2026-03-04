@@ -1,13 +1,12 @@
 export const fonts = {
-  NunitoSans: {
-    Regular: 'NunitoSans-Regular',
-    Italic: 'NunitoSans-Italic',
-    SemiBold: 'NunitoSans-SemiBold',
-    SemiBoldItalic: 'NunitoSans-SemiBoldItalic',
-    Bold: 'NunitoSans-Bold',
-    BoldItalic: 'NunitoSans-BoldItalic',
-  },
+  light: 'Outfit-Light',
+  regular: 'Outfit-Regular',
+  medium: 'Outfit-Medium',
+  semibold: 'Outfit-SemiBold',
+  bold: 'Outfit-Bold',
 } as const;
+
+export type FontWeight = 'light' | 'regular' | 'medium' | 'semibold' | 'bold';
 
 export enum FontSize {
   EXTRA_SMALL = 10,

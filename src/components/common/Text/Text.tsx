@@ -1,69 +1,42 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import type { ColorValue, TextProps as RNTextProps } from 'react-native';
 import { Text as RNText } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { useUnistyles } from 'react-native-unistyles';
+import type { FontWeight } from '@/theme/fonts';
 import { fonts } from '@/theme/fonts';
 
-export type FontWeight = 'normal' | 'semibold' | 'bold';
+export type { FontWeight };
 
 export interface TextProps extends RNTextProps {
-  fontSize?: number;
-  fontWeight?: FontWeight;
-  italic?: boolean;
+  size?: number;
+  weight?: FontWeight;
   underline?: boolean;
-  align?: 'auto' | 'left' | 'right' | 'center' | undefined;
+  align?: 'auto' | 'left' | 'right' | 'center';
   color?: ColorValue;
 }
 
-export const getFontFamily = (
-  fontWeight: FontWeight = 'normal',
-  italic = false
-): string => {
-  switch (fontWeight) {
-    case 'normal':
-      return italic ? fonts.NunitoSans.Italic : fonts.NunitoSans.Regular;
-    case 'semibold':
-      return italic
-        ? fonts.NunitoSans.SemiBoldItalic
-        : fonts.NunitoSans.SemiBold;
-    case 'bold':
-      return italic ? fonts.NunitoSans.BoldItalic : fonts.NunitoSans.Bold;
-    default:
-      return italic ? fonts.NunitoSans.Italic : fonts.NunitoSans.Regular;
-  }
-};
-
 export const Text: React.FC<TextProps> = ({
   children,
-  fontSize,
-  fontWeight,
-  italic,
+  size,
+  weight = 'regular',
   underline,
-  align = 'auto',
+  align,
   color,
   style,
   ...props
 }) => {
-  const { colors } = useTheme();
-
-  const fontFamily = useMemo(
-    () => getFontFamily(fontWeight, italic),
-    [fontWeight, italic]
-  );
+  const { theme } = useUnistyles();
 
   return (
     <RNText
       style={[
-        { fontFamily },
-        { color: color ?? colors.text },
-        { textAlign: align ?? align },
-        { textDecorationLine: underline ? 'underline' : 'none' },
-        fontSize
-          ? {
-              fontSize,
-              lineHeight: fontSize * 1.25,
-            }
-          : undefined,
+        {
+          fontFamily: fonts[weight],
+          color: color ?? theme.colors.onBackground,
+        },
+        align ? { textAlign: align } : undefined,
+        underline ? { textDecorationLine: 'underline' } : undefined,
+        size ? { fontSize: size, lineHeight: size * 1.25 } : undefined,
         style,
       ]}
       {...props}

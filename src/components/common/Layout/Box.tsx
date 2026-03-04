@@ -2,9 +2,14 @@ import type { BoxProps } from './types/BoxProps';
 import React from 'react';
 import type { PressableProps, StyleProp, ViewStyle } from 'react-native';
 import { Pressable, View } from 'react-native';
+import { resolveSpacing } from '@/theme/spacing';
 
 const Box: React.FC<
-  BoxProps & Omit<PressableProps, 'style'> & { children?: React.ReactNode, style?: StyleProp<ViewStyle> }
+  BoxProps &
+    Omit<PressableProps, 'style'> & {
+      children?: React.ReactNode;
+      style?: StyleProp<ViewStyle>;
+    }
 > = ({
   bgColor,
   backgroundColor,
@@ -119,97 +124,98 @@ const Box: React.FC<
 
   return (
     <Component
-      // @ts-expect-error - RNW does not have these props
-      style={[{
-        backgroundColor: bgColor ?? backgroundColor,
-        borderWidth: border ?? borderWidth,
-        borderStyle,
-        borderRadius: borderRadius ?? rounded,
-        borderColor,
-        borderTopWidth: borderTop ?? borderTopWidth ?? borderY,
-        borderBottomWidth: borderBottom ?? borderBottomWidth ?? borderY,
-        borderLeftWidth: borderLeft ?? borderLeftWidth ?? borderX,
-        borderRightWidth: borderRight ?? borderRightWidth ?? borderX,
-        borderTopColor,
-        borderBottomColor,
-        borderLeftColor,
-        borderRightColor,
-        borderTopLeftRadius:
-          borderTopLeftRadius ??
-          roundedTopLeft ??
-          borderTopRadius ??
-          roundedTop ??
-          borderLeft ??
-          roundedLeft ??
-          borderRadius,
-        borderTopRightRadius:
-          borderTopRightRadius ??
-          roundedTopRight ??
-          borderTopRadius ??
-          roundedTop ??
-          borderRight ??
-          roundedRight ??
-          borderRadius,
-        borderBottomLeftRadius:
-          borderBottomLeftRadius ??
-          roundedBottomLeft ??
-          borderBottomRadius ??
-          roundedBottom ??
-          borderLeft ??
-          roundedLeft ??
-          borderRadius,
-        borderBottomRightRadius:
-          borderBottomRightRadius ??
-          roundedBottomRight ??
-          borderBottomRadius ??
-          roundedBottom ??
-          borderRight ??
-          roundedRight ??
-          borderRadius,
-        // Flex Props
-        alignItems,
-        justifyContent,
-        flex,
-        flexDirection,
-        flexGrow,
-        flexShrink,
-        flexWrap,
-        flexBasis,
-        alignSelf,
-        // Layout Props
-        display,
-        width: w ?? width ?? boxSize,
-        maxWidth: maxW ?? maxWidth,
-        minWidth: minW ?? minWidth,
-        height: h ?? height ?? boxSize,
-        maxHeight: maxH ?? maxHeight,
-        minHeight: minH ?? minHeight,
-        overflow,
-        // Position Props
-        zIndex,
-        position: pos ?? position,
-        top: top ?? insetY ?? inset,
-        right: right ?? insetX ?? inset,
-        bottom: bottom ?? insetY ?? inset,
-        left: left ?? insetX ?? inset,
-        // Space Props
-        margin: m ?? margin,
-        marginTop: mt ?? marginTop ?? my ?? marginY,
-        marginBottom: mb ?? marginBottom ?? my ?? marginY,
-        marginLeft: ml ?? marginLeft ?? mx ?? marginX,
-        marginRight: mr ?? marginRight ?? mx ?? marginX,
-        padding: p ?? padding,
-        paddingTop: pt ?? paddingTop ?? py ?? paddingY,
-        paddingBottom: pb ?? paddingBottom ?? py ?? paddingY,
-        paddingLeft: pl ?? paddingLeft ?? px ?? paddingX,
-        paddingRight: pr ?? paddingRight ?? px ?? paddingX,
-        // Transform Props
-        transform,
-        gap,
-        rowGap,
-        columnGap,
-        opacity,
-      }, style]}
+      style={[
+        {
+          backgroundColor: bgColor ?? backgroundColor,
+          borderWidth: border ?? borderWidth,
+          borderStyle,
+          borderRadius: borderRadius ?? rounded,
+          borderColor,
+          borderTopWidth: borderTop ?? borderTopWidth ?? borderY,
+          borderBottomWidth: borderBottom ?? borderBottomWidth ?? borderY,
+          borderLeftWidth: borderLeft ?? borderLeftWidth ?? borderX,
+          borderRightWidth: borderRight ?? borderRightWidth ?? borderX,
+          borderTopColor,
+          borderBottomColor,
+          borderLeftColor,
+          borderRightColor,
+          borderTopLeftRadius:
+            borderTopLeftRadius ??
+            roundedTopLeft ??
+            borderTopRadius ??
+            roundedTop ??
+            borderLeft ??
+            roundedLeft ??
+            borderRadius,
+          borderTopRightRadius:
+            borderTopRightRadius ??
+            roundedTopRight ??
+            borderTopRadius ??
+            roundedTop ??
+            borderRight ??
+            roundedRight ??
+            borderRadius,
+          borderBottomLeftRadius:
+            borderBottomLeftRadius ??
+            roundedBottomLeft ??
+            borderBottomRadius ??
+            roundedBottom ??
+            borderLeft ??
+            roundedLeft ??
+            borderRadius,
+          borderBottomRightRadius:
+            borderBottomRightRadius ??
+            roundedBottomRight ??
+            borderBottomRadius ??
+            roundedBottom ??
+            borderRight ??
+            roundedRight ??
+            borderRadius,
+          // Flex Props
+          alignItems,
+          justifyContent,
+          flex,
+          flexDirection,
+          flexGrow,
+          flexShrink,
+          flexWrap,
+          flexBasis,
+          alignSelf,
+          // Layout Props
+          display,
+          width: w ?? width ?? boxSize,
+          maxWidth: maxW ?? maxWidth,
+          minWidth: minW ?? minWidth,
+          height: h ?? height ?? boxSize,
+          maxHeight: maxH ?? maxHeight,
+          minHeight: minH ?? minHeight,
+          overflow,
+          // Position Props
+          zIndex,
+          position: pos ?? position,
+          top: top ?? insetY ?? inset,
+          right: right ?? insetX ?? inset,
+          bottom: bottom ?? insetY ?? inset,
+          left: left ?? insetX ?? inset,
+          // Space Props (resolve spacing tokens)
+          margin: resolveSpacing(m ?? margin),
+          marginTop: resolveSpacing(mt ?? marginTop ?? my ?? marginY),
+          marginBottom: resolveSpacing(mb ?? marginBottom ?? my ?? marginY),
+          marginLeft: resolveSpacing(ml ?? marginLeft ?? mx ?? marginX),
+          marginRight: resolveSpacing(mr ?? marginRight ?? mx ?? marginX),
+          padding: resolveSpacing(p ?? padding),
+          paddingTop: resolveSpacing(pt ?? paddingTop ?? py ?? paddingY),
+          paddingBottom: resolveSpacing(pb ?? paddingBottom ?? py ?? paddingY),
+          paddingLeft: resolveSpacing(pl ?? paddingLeft ?? px ?? paddingX),
+          paddingRight: resolveSpacing(pr ?? paddingRight ?? px ?? paddingX),
+          // Transform Props
+          transform,
+          gap: resolveSpacing(gap),
+          rowGap: resolveSpacing(rowGap),
+          columnGap: resolveSpacing(columnGap),
+        },
+        style,
+      ]}
       onPress={onPress}
       disabled={disabled ?? !onPress}
       {...props}

@@ -1,29 +1,27 @@
-import type { ResourceLanguage } from 'i18next';
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import en from './en';
+import { i18n } from '@lingui/core';
+import { messages as enMessages } from '@/locales/en/messages';
 
-const resources = {
-  en,
+const catalogs = {
+  en: enMessages,
 } as const;
 
-const newResources = Object.keys(resources).reduce(
-  (acc, k) => {
-    const key = k as keyof typeof resources;
-    acc[key] = { ...resources[key] };
-    return acc;
-  },
-  {} as Record<keyof typeof resources, ResourceLanguage>
-);
+let initialized = false;
 
 const initI18n = () => {
-  i18n.use(initReactI18next).init({
-    fallbackLng: 'en',
-    debug: true,
-    resources: newResources,
+  if (initialized) {
+    return;
+  }
+
+  Object.entries(catalogs).forEach(([locale, messages]) => {
+    i18n.load(locale, messages);
   });
+
+  i18n.activate('en');
+  initialized = true;
 };
 
-export type LanguagesKeys = keyof typeof resources;
+export type LanguagesKeys = keyof typeof catalogs;
+export const setLocale = (locale: LanguagesKeys) => i18n.activate(locale);
+export { i18n };
 
 export default initI18n;

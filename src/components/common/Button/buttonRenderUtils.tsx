@@ -59,7 +59,7 @@ export const renderIconWithColor = (
       fill: color,
       source: {},
     });
-    // eslint-disable-next-line no-else-return
+     
   } else {
     return React.cloneElement(icon, {
       fill: color,

@@ -1,15 +1,33 @@
 import { Box } from '@/components/common/Layout/Box';
 import { Text } from '@/components/common/Text/Text';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import TextField from '@/components/common/TextField/TextField';
 import Button from '@/components/common/Button';
 import Spinner from '@/components/common/Button/Spinner';
 import { Ionicons } from '@expo/vector-icons';
-import { useTranslation } from 'react-i18next';
+import { useLingui } from '@lingui/react/macro';
+import { useUnistyles } from 'react-native-unistyles';
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
 
 export default function HomeScreen() {
   const [value, setValue] = useState('Value');
-  const { t } = useTranslation();
+  const { t } = useLingui();
+  const { theme } = useUnistyles();
+  const { colors } = theme;
+
+  const sheet = useRef<TrueSheet>(null);
+
+  // Present the sheet ✅
+  const present = async () => {
+    await sheet.current?.present();
+    console.log('horray! sheet has been presented 💩');
+  };
+
+  // Dismiss the sheet ✅
+  const dismiss = async () => {
+    await sheet.current?.dismiss();
+    console.log('Bye bye 👋');
+  };
 
   return (
     <Box flex={1} gap={8} padding={8}>
@@ -21,12 +39,19 @@ export default function HomeScreen() {
         }}
       />
       <TextField
-        label={'Test'}
+        label={t`Home`}
         error={'Test error'}
         hint={'Hint'}
-        left={<Ionicons size={20} name="home" style={{ padding: 8 }} />}
+        left={
+          <Ionicons
+            size={20}
+            name="home"
+            style={{ padding: 8 }}
+            color={colors.onBackground}
+          />
+        }
         value={value}
-        onChange={() => {}}
+        onChange={setValue}
       />
       <Spinner color="#000" />
       <Button
@@ -36,7 +61,7 @@ export default function HomeScreen() {
           console.log('Press Custom Button');
         }}
       >
-        <Text>Custom Text</Text>
+        <Text color={colors.primary}>Custom Text</Text>
       </Button>
       <Button
         text="Icon"
@@ -65,9 +90,10 @@ export default function HomeScreen() {
         size="medium"
       />
       <Button
-        text="Primary"
+        text="Open bottom sheet"
         onPress={() => {
           console.log('Press Primary Button');
+          present();
         }}
         variant={'primary'}
       />
@@ -92,6 +118,9 @@ export default function HomeScreen() {
         }}
         variant={'text'}
       />
+      <TrueSheet ref={sheet} detents={['auto', 1]} cornerRadius={24}>
+        <Button onPress={dismiss} text="Dismiss" />
+      </TrueSheet>
     </Box>
   );
 }

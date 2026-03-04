@@ -16,7 +16,7 @@ import type { IconProps } from './buttonRenderUtils';
 import { renderIconWithColor } from './buttonRenderUtils';
 import type { ButtonVariant } from './types';
 import { Box } from '@/components/common/Layout/Box';
-import { useTheme } from '@react-navigation/native';
+import { useUnistyles } from 'react-native-unistyles';
 
 export interface ButtonProps {
   text?: string;
@@ -94,7 +94,7 @@ function Button({
         accessibilityRole={disabled ? 'text' : 'link'}
         suppressHighlighting
         underline
-        fontWeight="bold"
+        weight="bold"
         color={textColor}
         style={textStyle}
         onPress={onPress}
@@ -136,7 +136,7 @@ function Button({
               >
                 <Text
                   selectable={false}
-                  fontWeight={variant === 'text' ? 'semibold' : 'bold'}
+                  weight={variant === 'text' ? 'semibold' : 'bold'}
                   align={noIcon ? 'center' : 'left'}
                   color={textColor}
                   style={textStyle}
@@ -182,7 +182,8 @@ const Content: React.FC<ContentProps> = ({
   children,
   ...props
 }) => {
-  const { components } = useTheme();
+  const { theme } = useUnistyles();
+  const { components } = theme;
   const paddingY = React.useMemo(() => {
     const borderWidth = variant === 'primary' ? 0 : 2;
     const paddingSize = size;

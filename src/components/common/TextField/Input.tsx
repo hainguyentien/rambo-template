@@ -4,7 +4,7 @@ import { useController } from 'react-hook-form';
 
 interface FormInput<V> {
   value?: V;
-  onChange?: (value: any) => void; // eslint-disable-line  @typescript-eslint/no-explicit-any
+  onChange?: (value: any) => void;  
 }
 
 type InputProps<P, FV extends FieldValues> = P & {

@@ -13,7 +13,7 @@ import {
 } from 'react-native-reanimated';
 
 import type { ButtonVariant } from './types';
-import { useTheme } from '@react-navigation/native';
+import { useUnistyles } from 'react-native-unistyles';
 import useLatest from '@/hooks/useLatest';
 
 const iOSShadowOutputRange = {
@@ -41,7 +41,7 @@ const useButtonBehavior = ({
   onPressInAction?: (event: GestureResponderEvent) => void;
   onPressOutAction?: (event: GestureResponderEvent) => void;
 }) => {
-  const theme = useTheme();
+  const { theme } = useUnistyles();
   const { maxElevationLevel, minElevationLevel, animationConfig } =
     theme.components.button;
   const colors = theme.components.button.colors[variant];

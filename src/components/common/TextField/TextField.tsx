@@ -1,12 +1,10 @@
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
-import React, { forwardRef, memo, useEffect, useRef, useState } from 'react';
-import isEmpty from 'lodash/isEmpty';
-import type { LayoutChangeEvent } from 'react-native';
+import React, { forwardRef, useState } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
-import { mask as rnmtMask, unMask as rnmtUnMask } from 'react-native-mask-text';
+import { useUnistyles } from 'react-native-unistyles';
+import { applyMask, unmask } from '@/lib/mask';
 import { Box } from '@/components/common/Layout/Box';
-import { getFontFamily, Text } from '@/components/common/Text/Text';
-import { useTheme } from '@react-navigation/native';
+import { Text } from '@/components/common/Text/Text';
+import { fonts } from '@/theme/fonts';
 import type { TextFieldProps } from '@/components/common/TextField/types';
 
 const TextField = forwardRef<any, TextFieldProps>(
@@ -18,41 +16,30 @@ const TextField = forwardRef<any, TextFieldProps>(
       left,
       right,
       onChange,
-      inputStyle,
       editable = true,
       disabled = false,
       onFocus: onFocusProp,
       onBlur: onBlurProp,
-      onLayout: onLayoutProp,
       isOptional,
-      onPressIconRight,
-      onPressIconLeft,
-      innerInputWrapper,
-      inputErrorStyle,
       containerStyle,
+      inputContainerStyle,
       value,
       mask,
-      borderBottomColor,
-      iconRightStyle,
       labelColor,
-      useBottomSheetInput,
-      toolTip,
-      toolTipStyle,
-      onPressToolTip,
       ...props
     },
     ref
   ) => {
-    const { colors } = useTheme();
-    const [isFocused, setIsFocused] = useState<boolean>(false);
-    const [placeholder, setPlaceholder] = useState<string>('');
-    const InputComponent = useBottomSheetInput
-      ? BottomSheetTextInput
-      : TextInput;
+    const { theme } = useUnistyles();
+    const { colors } = theme;
+    const [isFocused, setIsFocused] = useState(false);
+
+    const displayedValue =
+      mask && value ? applyMask(value, mask) : value?.toString();
 
     const handleOnChangeText = (text: string) => {
       if (typeof onChange === 'function') {
-        onChange(text, mask ? rnmtUnMask(text, mask.type) : undefined);
+        onChange(text, mask ? unmask(text, mask) : undefined);
       }
       if (typeof props.onChangeText === 'function') {
         props.onChangeText(text);
@@ -69,112 +56,68 @@ const TextField = forwardRef<any, TextFieldProps>(
       setIsFocused(false);
     };
 
-    const onLayout = (e: LayoutChangeEvent) => {
-      onLayoutProp?.(e);
-    };
-    const placeholderTimer = useRef<number>();
-
-    const displayedValue =
-      mask && value
-        ? rnmtMask(value, mask.pattern, mask.type, mask.options)
-        : value?.toString();
-
-    useEffect(() => {
-      if (!isFocused) {
-        const placeholderProp = props.placeholder;
-        if (placeholderProp) {
-          placeholderTimer.current = setTimeout(
-            () => setPlaceholder(placeholderProp),
-            50
-          ) as unknown as number;
-        }
-      } else {
-        setPlaceholder('');
-      }
-
-      return () => {
-        if (placeholderTimer.current) {
-          clearTimeout(placeholderTimer.current);
-        }
-      };
-    }, [isFocused, label, props.placeholder]);
+    const borderColor = error
+      ? colors.error
+      : isFocused
+        ? colors.primary
+        : colors.onBackground;
 
     return (
-      <Box
-        mb={16}
-        opacity={disabled ? 0.7 : 1}
-        style={[styles.inputContainerStyle, containerStyle]}
-      >
-        <Box flexDirection={'row'} alignItems="center">
-          <Text
-            color={
-              labelColor ? labelColor : disabled ? colors.gray : colors.text
-            }
-          >
-            {label}
-            {isOptional && (
-              <Text color={disabled ? colors.gray : colors.text}>
-                {' (optional)'}
-              </Text>
-            )}
-          </Text>
-          {toolTip && (
-            <Box onPress={onPressToolTip} style={toolTipStyle}>
-              {React.isValidElement(toolTip)
-                ? toolTip
-                : React.createElement(toolTip)}
-            </Box>
-          )}
-        </Box>
-        <Box
-          flexDirection={'row'}
-          alignItems={'center'}
-          justifyContent={'space-between'}
-          w={'100%'}
-          mb={12}
-          style={[
-            styles.containerInput,
-            !!error && { borderColor: colors.error },
-            innerInputWrapper,
-          ]}
-        >
-          {left && (
-            <Box onPress={onPressIconLeft}>
-              {React.isValidElement(left) ? left : React.createElement(left)}
-            </Box>
-          )}
+      <Box mb={16} opacity={disabled ? 0.7 : 1} style={containerStyle}>
+        {!!label && (
+          <Box flexDirection="row" alignItems="center">
+            <Text
+              color={
+                labelColor ??
+                (disabled ? colors.placeholder : colors.onBackground)
+              }
+            >
+              {label}
+              {isOptional && (
+                <Text
+                  color={disabled ? colors.placeholder : colors.onBackground}
+                >
+                  {' (optional)'}
+                </Text>
+              )}
+            </Text>
+          </Box>
+        )}
 
-          <InputComponent
+        <Box
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="space-between"
+          w="100%"
+          mb={12}
+          style={[styles.containerInput, { borderColor }, inputContainerStyle]}
+        >
+          {left}
+
+          <TextInput
             {...props}
             ref={ref}
             autoCorrect={false}
-            selectionColor={props?.selectionColor}
-            placeholderTextColor={props?.placeholderTextColor}
             value={displayedValue}
-            placeholder={placeholder}
-            onLayout={onLayout}
+            placeholder={props.placeholder}
+            placeholderTextColor={
+              props.placeholderTextColor ?? colors.placeholder
+            }
             onChangeText={handleOnChangeText}
-            onChange={props.onChangeEvent}
             onFocus={onFocus}
             onBlur={onBlur}
             style={[
               styles.inputText,
-              { color: disabled ? colors.gray : colors.text },
-              inputStyle,
-              inputErrorStyle,
+              { color: disabled ? colors.placeholder : colors.onBackground },
             ]}
             editable={!disabled && editable}
           />
 
-          {right && (
-            <Box onPress={onPressIconRight} style={iconRightStyle}>
-              {React.isValidElement(right) ? right : React.createElement(right)}
-            </Box>
-          )}
+          {right}
         </Box>
-        {(!isEmpty(hint) || !isEmpty(error)) && (
-          <Text color={colors.error}>{error || hint}</Text>
-        )}
+
+        {!!error && <Text color={colors.error}>{error}</Text>}
+        {!error && !!hint && <Text color={colors.placeholder}>{hint}</Text>}
       </Box>
     );
   }
@@ -182,30 +125,20 @@ const TextField = forwardRef<any, TextFieldProps>(
 
 TextField.displayName = 'TextField';
 
-export default memo(TextField);
+export default TextField;
 
 const styles = StyleSheet.create({
-  inputContainerStyle: {},
   inputText: {
     flex: 1,
     fontSize: 16,
     lineHeight: 24,
-    fontFamily: getFontFamily(),
-    paddingHorizontal: 0, // fix padding in android input
+    fontFamily: fonts.regular,
+    paddingHorizontal: 0,
     minHeight: 36,
     padding: 8,
   },
-  inputStyleError: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
   containerInput: {
-    borderBottomWidth: 1,
-    borderColor: '#000',
     borderWidth: 1,
     borderRadius: 6,
-  },
-  mgBottom: {
-    marginBottom: 12,
   },
 });

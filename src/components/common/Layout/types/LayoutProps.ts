@@ -1,3 +1,5 @@
+import type { DimensionValue } from 'react-native';
+
 export interface LayoutProps {
   /**
    * The CSS `display` property
@@ -6,55 +8,55 @@ export interface LayoutProps {
   /**
    * The CSS `width` property
    */
-  width?: number | string;
+  width?: DimensionValue;
   /**
    * The CSS `width` property
    */
-  w?: number | string;
+  w?: DimensionValue;
   /**
    * The CSS `width` and `height` property
    */
-  boxSize?: number | string;
+  boxSize?: DimensionValue;
   /**
    * The CSS `max-width` property
    */
-  maxWidth?: number | string;
+  maxWidth?: DimensionValue;
   /**
    * The CSS `max-width` property
    */
-  maxW?: number | string;
+  maxW?: DimensionValue;
   /**
    * The CSS `min-width` property
    */
-  minWidth?: number | string;
+  minWidth?: DimensionValue;
   /**
    * The CSS `min-width` property
    */
-  minW?: number | string;
+  minW?: DimensionValue;
   /**
    * The CSS `height` property
    */
-  height?: number | string;
+  height?: DimensionValue;
   /**
    * The CSS `height` property
    */
-  h?: number | string;
+  h?: DimensionValue;
   /**
    * The CSS `max-height` property
    */
-  maxHeight?: number | string;
+  maxHeight?: DimensionValue;
   /**
    * The CSS `max-height` property
    */
-  maxH?: number | string;
+  maxH?: DimensionValue;
   /**
    * The CSS `min-height` property
    */
-  minHeight?: number | string;
+  minHeight?: DimensionValue;
   /**
    * The CSS `min-height` property
    */
-  minH?: number | string;
+  minH?: DimensionValue;
   /**
    * The CSS `overflow` property
    */

@@ -1,100 +1,102 @@
+import type { Spacing } from '@/theme/spacing';
+
 export interface SpaceProps {
 	/**
 	 * Margin on top, left, bottom and right
 	 */
-	m?: number;
+	m?: Spacing;
 	/**
 	 * Margin on top, left, bottom and right
 	 */
-	margin?: number;
+	margin?: Spacing;
 	/**
 	 * Margin on top
 	 */
-	mt?: number;
+	mt?: Spacing;
 	/**
 	 * Margin on top
 	 */
-	marginTop?: number;
+	marginTop?: Spacing;
 	/**
 	 * Margin on right
 	 */
-	mr?: number;
-	marginRight?: number;
+	mr?: Spacing;
+	marginRight?: Spacing;
 	/**
 	 * Margin on bottom
 	 */
-	mb?: number;
-	marginBottom?: number;
+	mb?: Spacing;
+	marginBottom?: Spacing;
 	/**
 	 * Margin on left
 	 */
-	ml?: number;
-	marginLeft?: number;
+	ml?: Spacing;
+	marginLeft?: Spacing;
 	/**
 	 * Margin on left and right
 	 */
-	mx?: number;
-	marginInline?: number;
+	mx?: Spacing;
+	marginInline?: Spacing;
 	/**
 	 * Margin on left and right
 	 */
-	marginX?: number;
+	marginX?: Spacing;
 	/**
 	 * Margin on top and bottom
 	 */
-	my?: number;
+	my?: Spacing;
 	/**
 	 * Margin on top and bottom
 	 */
-	marginY?: number;
+	marginY?: Spacing;
 	/**
 	 * Padding on top, left, bottom and right
 	 */
-	p?: number;
+	p?: Spacing;
 	/**
 	 * Padding on top, left, bottom and right
 	 */
-	padding?: number;
+	padding?: Spacing;
 	/**
 	 * Padding on top
 	 */
-	pt?: number;
+	pt?: Spacing;
 	/**
 	 * Padding on top
 	 */
-	paddingTop?: number;
+	paddingTop?: Spacing;
 	/**
 	 * Padding on right
 	 */
-	pr?: number;
-	paddingRight?: number;
+	pr?: Spacing;
+	paddingRight?: Spacing;
 	/**
 	 * Padding on bottom
 	 */
-	pb?: number;
+	pb?: Spacing;
 	/**
 	 * Padding on bottom
 	 */
-	paddingBottom?: number;
+	paddingBottom?: Spacing;
 	/**
 	 * Padding on left
 	 */
-	pl?: number;
-	paddingLeft?: number;
+	pl?: Spacing;
+	paddingLeft?: Spacing;
 	/**
 	 * Padding on left and right
 	 */
-	px?: number;
+	px?: Spacing;
 	/**
 	 * Padding on left and right
 	 */
-	paddingX?: number;
+	paddingX?: Spacing;
 	/**
 	 * Padding on top and bottom
 	 */
-	py?: number;
+	py?: Spacing;
 	/**
 	 * Padding on top and bottom
 	 */
-	paddingY?: number;
+	paddingY?: Spacing;
 }
